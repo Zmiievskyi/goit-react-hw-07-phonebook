@@ -1,27 +1,32 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Filter } from '../Filter/Filter';
 import { Box } from '../Common/Common.styled';
-import { getSearchName, getContacts } from 'redux/selector';
-import { fetchContacts, deleteContact } from 'redux/operations';
+import { getSearchName } from 'redux/selector';
+// import { fetchContacts, deleteContact } from 'redux/operations';
+import { useGetContactsQuery, useDeleteContactMutation } from 'redux/operations';
+
 
 export const Contacts = () => {
-  const contactsList = useSelector(getContacts);
+  // const contactsList = useSelector(getContacts);
   const searchName = useSelector(getSearchName);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+ const { data = [], isLoading } = useGetContactsQuery();
+ const [ deleteContact ] = useDeleteContactMutation();
 
-  const filtredList = contactsList.items.filter(contact =>
+  const filtredList = data.filter(contact =>
     contact.name.toLowerCase().includes(searchName)
   );
   
 
-  const handlerDeleteContact = id => {
-    dispatch(deleteContact(id));
-  };
+  const handlerDeleteContact = async id => {
+    // dispatch(deleteContact(id));
+    await deleteContact(id);
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+  };
+ 
+
+  
 
   return (
     <Box border="1px solid">
